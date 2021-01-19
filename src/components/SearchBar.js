@@ -7,7 +7,7 @@ const SearchBar = ({handleSubmitQuery}) => {
     const onSubmitQuery = (e) => {
         e.preventDefault();
         handleSubmitQuery(querySB);
-        setQuery('')
+        // setQuery('')
     }
 
     const onChngQuery = (e) => {
@@ -27,7 +27,8 @@ const SearchBar = ({handleSubmitQuery}) => {
         autoComplete="off"
         autoFocus
         placeholder="Search images and photos"
-        onChange = {onChngQuery}
+        onChange={onChngQuery}
+        value={querySB}
     />
     </form>
     </header>

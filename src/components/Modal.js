@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 
-const Modal = () => {
-    
+
+const Modal = ({modalClose, lageImg}) => {
+    useEffect(() => {
+        window.addEventListener('keydown', onEscClose)
+        return (() => window.removeEventListener('keydown', onEscClose))
+    });
+
+
+    const onEscClose = (e) => {
+        e.code === 'Escape' && modalClose()
+        
+    }
+
     return (
         <div className="Overlay">
             <div className="Modal">
-                <img src="" alt="" />
+                <img src={lageImg} alt="" className="modalIMG" />
+               
             </div>
         </div>
         

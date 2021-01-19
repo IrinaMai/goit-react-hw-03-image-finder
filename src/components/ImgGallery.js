@@ -1,13 +1,25 @@
 import React from 'react';
 
 
-const ImgGallery = ({listImgGallery}) => {
+const ImgGallery = ({ listImgGallery, modalOpen }) => {
+    
+    const onImgClick = (e) => {
+        const lageUrl = e.target.dataset.url;
+        modalOpen(lageUrl)
+        // console.log(lageUrl)
+    }
+
     return (
         <ul className="ImageGallery">
-            {listImgGallery.map(({id, pageURL, previewURL}) => {
+            {listImgGallery.map(({id, largeImageURL, previewURL, tags}) => {
                 return (
-                    <li className="ImageGalleryItem" key = {id} data-url = {pageURL}>
-                    <img src={previewURL} alt="" className="ImageGalleryItem-image" />
+                    <li className="ImageGalleryItem"
+                        key={id} 
+                    >
+                        <img src={previewURL}
+                            data-url={largeImageURL}
+                            alt={tags} className="ImageGalleryItem-image"
+                            onClick={onImgClick} />
                     </li>
                 )
             })}

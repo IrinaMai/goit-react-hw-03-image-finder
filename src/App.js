@@ -4,6 +4,7 @@ import ImgGallery from './components/ImgGallery';
 import fetchApi from './servises/Api';
 import Modal from './components/Modal';
 import Button from './components/Button';
+import Spinner from './components/Spinner';
 
 
 const initialState = {
@@ -11,37 +12,63 @@ const initialState = {
   page: 1,
   imgList: [],
   modalIsOpen: false,
+  loadSpinner: false,
+  lageUrlState: '',
+  errorState: '',
 };
 
 function App() {
   const [state, setState] = useState({ ...initialState });
   
-  // useEffect(() => {
-  //     fetchApi(state.query, state.page)
-  //     .then((response) => { setState(prev => ({ ...prev, imgList: [...prev.imgList,...response] })) })
-  // }, [state.query, state.page]);
-
+  useEffect(() => {
+        window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+        });
+  }, [state.page])
+ 
   const handleSubmitQuery = (querySearchBar) => {
-    setState(prev => ({...prev, page: 1 }))
-     fetchApi(querySearchBar, state.page)
-      .then((response) => { setState(prev => ({ ...prev, imgList: [...response], query: querySearchBar, page: prev.page +1 })) })
+
+    if (querySearchBar) {
+      setState(prev => ({ ...prev, loadSpinner: true }))
+      fetchApi(querySearchBar)
+        .then((response) => { 
+          setState(prev => ({
+            ...prev, imgList: [...response],
+            query: querySearchBar, page: 2, loadSpinner: false
+          }))
+        })
+    }
+
   };
 
   const handleLoadMoreBtn = () => {
+    setState(prev => ({ ...prev, loadSpinner: true }))
+
     fetchApi(state.query, state.page)
-    .then((response) => { setState(prev => ({ ...prev, imgList: [...prev.imgList, ...response], page: prev.page +1  })) })
+      .then((response) => { setState(prev => ({ ...prev, imgList: [...prev.imgList, ...response], page: prev.page + 1, loadSpinner: false })) })
   }
+
+  const modalOpen = (lageUrl) => {
+    setState(prev => ({ ...prev, modalIsOpen: true, lageUrlState: lageUrl}))
+  };
+
+  const modalClose = () => {
+    setState(prev => ({ ...prev, modalIsOpen: false }))
+  }
+ 
 
   return (
     <>
       <SearchBar
         handleSubmitQuery={handleSubmitQuery} />
-      {state.imgList.length &&
-        <ImgGallery listImgGallery={state.imgList} />}
-      {state.imgList.length &&
+      {state.imgList.length>0 &&
+        <ImgGallery listImgGallery={state.imgList} modalOpen={modalOpen} />}
+        {state.loadSpinner && <Spinner/>}
+      {state.imgList.length>0 &&
         <Button handleLoadMoreBtn={handleLoadMoreBtn} />}
 
-    {state.modalIsOpen && <Modal/>}
+      {state.modalIsOpen && <Modal modalClose={modalClose} lageImg={state.lageUrlState} />}
     </>
   );
 }

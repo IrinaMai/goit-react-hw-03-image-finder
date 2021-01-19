@@ -4,7 +4,7 @@ const Button = ({handleLoadMoreBtn}) => {
     const onClickLoadBtn = () => {
         handleLoadMoreBtn();
     }
-    
+
     return (
     <button type="button" className="Button" onClick={onClickLoadBtn}>Load More</button>
     )
